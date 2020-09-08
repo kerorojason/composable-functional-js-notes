@@ -36,7 +36,11 @@ const getPort = fileName =>
     .map(c => tryCatch(() => JSON.parse(c))) // JSON.parse can cause an error, we need to guard it with a tryCatch
     .fold(
       e => 3000,
-      c => c.port)
+      right => right.fold( // 第一个tryCatch成功
+        e => 3000, // JSON.parse失败
+        c => c.port
+      )
+    );
 ```
 
 But this results in nested `Either`s. 
